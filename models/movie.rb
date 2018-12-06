@@ -19,6 +19,14 @@ attr_reader :id
     @id = SqlRunner.run(sql, values).first['id'].to_i
   end
 
-
-
+  def stars()
+    sql = "SELECT stars.* FROM stars
+INNER JOIN castings ON stars.id = castings.star_id
+INNER JOIN movies ON castings.movie_id = movies.id
+WHERE castings.movie_id = $1
+    "
+    values = [@id]
+    star_hash = SqlRunner.run(sql, values)
+    star_hash.map { |star| Star.new(star)}
+  end
 end

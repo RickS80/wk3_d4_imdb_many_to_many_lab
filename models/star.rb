@@ -15,6 +15,19 @@ class Star
     RETURNING id"
     values = [@first_name, @last_name]
     @id = SqlRunner.run(sql, values).first['id'].to_i
-
   end
+
+  def movies()
+    sql = "SELECT movies.* FROM
+          movies INNER JOIN castings
+          ON movies.id = castings.movie_id
+          INNER JOIN stars
+          ON castings.star_id = stars.id
+          WHERE castings.star_id = $1"
+    values = [@id]
+    movies_hash = SqlRunner.run(sql, values)
+    movies_hash.map { |movie| Movie.new(movie)}
+  end
+
+
 end
